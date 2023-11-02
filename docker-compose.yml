@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  cvm-backend-pg:
+    image: 'bitnami/postgresql'
+    container_name: 'cvm-backend-pg'
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRESQL_USERNAME=docker
+      - POSTGRESQL_PASSWORD=docker
+      - POSTGRESQL_DATABASE=cvmdatabase
+    networks:
+      - cvm-network
+  cvm-nodejs:
+    build:
+      context: ./
+    ports:
+      - 3333:3000
+    env_file:
+      - .env.docker
+    depends_on:
+      - cvm-backend-pg
+    networks:
+      - cvm-network
+    restart: always
+
+networks:
+  cvm-network:
